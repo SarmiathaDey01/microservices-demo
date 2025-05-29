@@ -1,0 +1,53 @@
+name: CI for Microservices Demo
+ 
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+ 
+jobs:
+  paymentservice-python:
+    name: Paymentservice - Python Check
+    runs-on: ubuntu-latest
+ 
+    defaults:
+      run:
+        working-directory: src/paymentservice
+ 
+    steps:
+      - uses: actions/checkout@v3
+ 
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+ 
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+ 
+      - name: Run syntax check
+        run: python -m py_compile app.py
+ 
+  emailservice-go:
+    name: Emailservice - Go Check
+    runs-on: ubuntu-latest
+ 
+    defaults:
+      run:
+        working-directory: src/emailservice
+ 
+    steps:
+      - uses: actions/checkout@v3
+ 
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.18'
+ 
+      - name: Build Emailservice
+        run: go build -v .
+ 
+      - name: Run Go vet
+        run: go vet .
